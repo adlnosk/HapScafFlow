@@ -25,6 +25,15 @@ export LINEAGE="fabales"
 
 module purge
 module load bioinfo/Snakemake/7.20.0
+
+
+if ls $PATH_TO_FASTA/q*_3D_DNA_HAP*/hap_*.fasta.fold.0.review.assembly &> /dev/null; then
+	echo 'Review file found, re-running all rules.'
+	export REVIEW="YES"
+else
+	echo 'Review file not found, running until scaffolding.'
+	export REVIEW="NO"
+fi
+
+
 snakemake -s Snakefile --profile . --rerun-incomplete --keep-going
-
-

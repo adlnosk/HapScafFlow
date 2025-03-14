@@ -13,16 +13,24 @@ MERGEDNODUPS = os.getenv("ALIGNED_MERGED_NODUPS")
 
 print(f"Path = {PATH} | Chromosomes = {CHROMOSOMES} | Haps = {HAPS}")
 
+# define rules
+REVIEW = os.getenv("REVIEW")
+
+conditioned_rules = []
+if REVIEW == "YES":
+    conditioned_rules = [
+        PATH + "/FINALS/whole_genome.fasta.gz",
+        PATH + "/FINALS/chrs/only_chrall_allhap.fasta.gz"
+    ]
 
 rule all:
-    input:
+    input: 
         expand(PATH + "/q1_3D_DNA_HAP{n}/hap_{n}.fasta.fold.0.hic", n=HAPS),
         expand(PATH + "/q1_3D_DNA_HAP{n}/hap_{n}.fasta.fold.0.assembly", n=HAPS),
         expand(PATH + "/q0_3D_DNA_HAP{n}/hap_{n}.fasta.fold.0.hic", n=HAPS),
         expand(PATH + "/q0_3D_DNA_HAP{n}/hap_{n}.fasta.fold.0.assembly", n=HAPS),
-        PATH + "/BUSCO/busco_summaries/busco_figure.png",
-        PATH + "/FINALS/whole_genome.fasta.gz",
-        PATH + "/FINALS/chrs/only_chrall_allhap.fasta.gz"
+        *conditioned_rules,  # Unpacking the list to include optional files
+        PATH + "/BUSCO/busco_summaries/busco_figure.png"
 
 rule links:
     input:
