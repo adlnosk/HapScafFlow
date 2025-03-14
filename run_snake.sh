@@ -2,26 +2,24 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=500M
 
+# Script to parametrise and submit snakemake HapScafFlow
+# from https://github.com/adlnosk/HapScafFlow
 
-# workflow to produce BUSCO scores and scaffold genomes with -q0 and -q1 for 4 haplotypes
-# after manual curation and producing review files, Snakemake can be resumed to create a whole_genome.fasta file (incl. assemblathon and bgzipping)
+
+# !!! FOR DRY-RUN, ADD `-n` FLAG IN THE LAST LINE !!!
+
+##### Input files #####
 
 # mandatory INPUTS: hap_{n}.fasta, hap_{n}.fasta.length, aligned HiC reads with Juicer
+export ALIGNED_MERGED_NODUPS="/work/project/briefwp3/Adela/Medicago_sativa/scaffolding/hifiasm_0.24.0/Juicer/all.corrected_renamed_hifiv24/aligned/merged_nodups.txt" # Set correct merged_nodups.txt input path.
+export PATH_TO_FASTA="$PWD/.." # Change if input files are stored else than in above directory.
 
-export ALIGNED_MERGED_NODUPS="/work/project/briefwp3/Adela/Medicago_sativa/scaffolding/hifiasm_0.24.0/Juicer/all.corrected_renamed_hifiv24/aligned/merged_nodups.txt"
+###### Species-specific parameters ######
 
-# By default the input files should be stored above the /snake directory ($PWD/..). 
-# If not, change next line. The output is stored next to the input files.
-export PATH_TO_FASTA="$PWD/.."
-
-# Define number of chromosomes
-export NUM_CHRS=8
-
-# Automatise number of haplotypes
-export NUM_HAP=$(ls $PATH_TO_FASTA/hap_*.fasta 2>/dev/null | grep -oP '(?<=/hap_)\d+' | sort -nr | head -n1)
-
-# Set BUSCO lineage
-export LINEAGE="fabales"
+export NUM_CHRS=8 # Define number of chromosomes
+export NUM_HAP=$(ls $PATH_TO_FASTA/hap_*.fasta 2>/dev/null | grep -oP '(?<=/hap_)\d+' | sort -nr | head -n1) # Automatise number of haplotypes
+export LINEAGE="fabales" # Set BUSCO lineage
+export MOTIF="AAACCCTAAACCCT" # Set telomeric repeats motif
 
 module purge
 module load bioinfo/Snakemake/7.20.0

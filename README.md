@@ -4,7 +4,7 @@
 
 ## Overview  
 
-HapScafFlow is a Snakemake workflow designed to scaffold individual haplotypes using [3D-DNA](https://github.com/aidenlab/3d-dna), assess genome completeness with [BUSCO](https://busco.ezlab.org/), and generate final **whole-genome** or **chromosome-level assemblies**. The pipeline was designed to scaffold the output from [Toulbar2](https://github.com/toulbar2/toulbar2), which assigns contigs to new haplotype numbers based on protein alignment. The original assembly comes from [Hifiasm](https://hifiasm.readthedocs.io/en/latest/).  
+HapScafFlow is a Snakemake workflow designed to scaffold individual haplotypes using [3D-DNA](https://github.com/aidenlab/3d-dna), assess genome completeness with [BUSCO](https://busco.ezlab.org/), generate final **whole-genome** or **chromosome-level assemblies** and search individual chromosomes for **telomeric repeats** with [tidk](https://github.com/tolkit/telomeric-identifier). The pipeline was designed to scaffold the output from [Toulbar2](https://github.com/toulbar2/toulbar2), which assigns contigs to new haplotype numbers based on protein alignment. The original assembly comes from [Hifiasm](https://hifiasm.readthedocs.io/en/latest/).  
 
 ### Workflow Execution and Manual Curation  
 
@@ -25,7 +25,7 @@ The following input files are required:
 
 ## Configuration  
 
-Pipeline configuration variables are set in `run_snake.sh`.  
+Pipeline configuration variables are set in `run_snake.sh`. 
 
 ### Defining Genome Structure  
 
@@ -41,15 +41,16 @@ The number of haplotypes is determined automatically from the number in input fa
 export NUM_HAP=$(ls $PATH_TO_FASTA/hap_*.fasta 2>/dev/null | grep -oP '(?<=/hap_)\d+' | sort -nr | head -n1)
 ```
 
-### BUSCO Lineage  
+### Species-specific parameters
 
-Set lineage of your organism:
+#### BUSCO lineage
 
-```bash
-export LINEAGE="fabales"
-```
+Set lineage of your organism. By default, the pipeline uses the .odb10 version of the BUSCO dataset.  
 
-By default, the pipeline uses the .odb10 version of the BUSCO dataset.  
+#### Telomere repeat motif
+
+After producing chromosome-level assembly, the chromosomes are searched for telomeric repeats and a plot of the highest hits is produced.
+Set the telomeric repeat of your organism.
 
 ## Snakemake and Dependencies  
 
@@ -68,6 +69,7 @@ module load bioinfo/Seqtk/1.3
 module load bioinfo/bgzip/1.18
 module load bioinfo/samtools/1.19
 module load bioinfo/assemblathon2/d1f044b
+module load bioinfo/tidk/0.2.63
 ```
 
 ## Installing the Pipeline  
@@ -84,9 +86,10 @@ cd /path/to/fasta/files
 
 ```bash
 git clone https://github.com/adlnosk/HapScafFlow.git
+cd HapScafFlow
 ```
 
-3. **Modify `run_snake.sh`** according to your dataset.  
+3. **Modify `run_snake.sh`** according to your dataset.
 
 ## Running the Workflow  
 
@@ -105,4 +108,5 @@ The pipeline generates:
 - **BUSCO scores** to assess completeness  (in `BUSCO/busco_summaries`)
 - **Final whole-genome and chromosome-level assemblies** (in `FINALS/` and `FINALS/chrs/`)  
 - **Assemblathon statistics**  (`/FINALS/whole_genome.fasta.gz.assemblahon_stats`)
+- **Telomeric repeats plot** (`/TELOMERES/`)
 

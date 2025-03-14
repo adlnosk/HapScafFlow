@@ -7,7 +7,7 @@ CHROMOSOMES = list(range(1, nchr+1))
 nhap = int(os.getenv("NUM_HAP", 0))
 HAPS = list(range(1, nhap+1))
 line = os.getenv("LINEAGE")
-
+MOTIF = os.getenv("MOTIF")
 MERGEDNODUPS = os.getenv("ALIGNED_MERGED_NODUPS")
 
 
@@ -20,7 +20,8 @@ conditioned_rules = []
 if REVIEW == "YES":
     conditioned_rules = [
         PATH + "/FINALS/whole_genome.fasta.gz",
-        PATH + "/FINALS/chrs/only_chrall_allhap.fasta.gz"
+        PATH + "/FINALS/chrs/only_chrall_allhap.fasta.gz",
+        PATH + "/TELOMERES/plot_haps.svg"
     ]
 
 rule all:
@@ -157,3 +158,25 @@ rule cat_chrs:
         PATH + "/FINALS/chrs/only_chrall_allhap.fasta.gz"
     shell:
         "cat {input} >> {output}"
+
+rule telomeres:
+    input:
+        genome=rules.cat_chrs.output
+    output:
+        PATH + "/TELOMERES/search_telomeric_repeat_windows.tsv"
+    resources:
+        mem_mb=5000
+    shell:
+        "scripts/run_tidk.sh {MOTIF} {input.genome} {PATH}/TELOMERES/"
+
+rule plot_telomeres:
+    input:
+        search=rules.telomeres.output
+    output:
+        PATH + "/TELOMERES/plot_haps.svg"
+    params:
+        nhaps=HAPS
+    shell:
+        "scripts/order_by_hap_plot.sh {MOTIF} {input.search} {params.nhaps} {PATH}/TELOMERES/"
+
+
