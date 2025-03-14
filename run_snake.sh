@@ -20,6 +20,8 @@ export NUM_CHRS=8
 # Automatise number of haplotypes
 export NUM_HAP=$(ls $PATH_TO_FASTA/hap_*.fasta 2>/dev/null | grep -oP '(?<=/hap_)\d+' | sort -nr | head -n1)
 
+# Set BUSCO lineage
+export LINEAGE="fabales"
 
 module purge
 module load bioinfo/Snakemake/7.20.0

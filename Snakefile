@@ -1,10 +1,12 @@
 import os
 
+PWD = os.getcwd()
 PATH = os.getenv("PATH_TO_FASTA")
 nchr = int(os.getenv("NUM_CHRS", 0))
 CHROMOSOMES = list(range(1, nchr+1))
 nhap = int(os.getenv("NUM_HAP", 0))
 HAPS = list(range(1, nhap+1))
+line = os.getenv("LINEAGE")
 
 MERGEDNODUPS = os.getenv("ALIGNED_MERGED_NODUPS")
 
@@ -78,13 +80,13 @@ rule busco:
     resources: 
         mem_mb=20000
     shell:
-        "scripts/BUSCO.sh {wildcards.n} {input.genome} {PATH}/BUSCO/hap{wildcards.n}"
+        "scripts/BUSCO.sh {wildcards.n} {input.genome} {PATH}/BUSCO/hap{wildcards.n} {line}"
 
 rule copy:
     input:
         rules.busco.output
     output:
-        PATH + "/BUSCO/busco_summaries/short_summary.specific.fabales_odb10.hap{n}.txt"
+        PATH + "/BUSCO/busco_summaries/short_summary.specific." + line + "_odb10.hap{n}.txt"
     shell:
         "cp {input} {PATH}/BUSCO/busco_summaries/"
 
@@ -94,7 +96,7 @@ rule plot_busco:
     output:
         PATH + "/BUSCO/busco_summaries/busco_figure.png"
     shell:
-        "scripts/plot_busco.sh {PATH}/BUSCO/busco_summaries/ {PATH}/snake/scripts/generate_plot.py"
+        "scripts/plot_busco.sh {PATH}/BUSCO/busco_summaries/ {PWD}/scripts/generate_plot.py"
 
 rule final_review:
     input:
