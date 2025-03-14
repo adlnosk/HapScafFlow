@@ -129,7 +129,7 @@ rule whole_genome:
         mem_mb=20000
     threads: 10
     shell:
-        "scripts/make_whole.sh {PATH}/FINALS"
+        "scripts/make_whole.sh {PATH}/FINALS {nchr}"
 
 rule get_chrs:
     input:

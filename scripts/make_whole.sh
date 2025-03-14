@@ -4,6 +4,9 @@
 
 
 wd=$1
+nchr=$2
+echo $nchr
+
 
 cd $wd
 
@@ -16,9 +19,9 @@ for f in `ls hap*FINAL.fasta`
 do
 	n=`echo $f | awk -F '[_.]' '{print $2}'`
 	samtools faidx $f
-	awk -v n="$n" 'NR <= 8 {print $1, "chr" NR "_h" n} NR > 8 {print $1, $1 "_hap" n}' $f.fai > list_$f.txt
+	awk -v maxchr="$nchr" -v n="$n" 'NR <= maxchr {print $1, "chr" NR "_h" n} NR > maxchr {print $1, $1 "_hap" n}' $f.fai > list_$f.txt
 	awk 'FNR==NR { a[">"$1] = $2 ; next} $1 in a { sub($1,">" a[$1]) }1' list_$f.txt $f > renamed_$f 
-	bgzip -@ 8 -f -l 9 -k renamed_$f
+	bgzip -@ 10 -f -l 9 -k renamed_$f
 	
 	cat renamed_$f >> whole_genome.fasta
 
