@@ -53,7 +53,7 @@ By default, the pipeline uses the .odb10 version of the BUSCO dataset.
 
 ## Snakemake and Dependencies  
 
-This pipeline is designed for **Snakemake 7.20.0** and runs using a **Slurm cluster** (preconfigured in `--profile config.yaml`).  
+This pipeline is designed for **Snakemake 7.20.0** and runs using a **Slurm cluster** (preconfigured in `config.yaml`).  
 
 ### Required Modules  
 
@@ -98,10 +98,11 @@ sbatch run_snake.sh
 
 ## Output  
 
+- output files are stored next to the input FASTA files
+
 The pipeline generates:  
-- Scaffolds for **each haplotype**  
-- **BUSCO scores** to assess completeness  
-- **Final whole-genome and chromosome-level assemblies**  
-- **Assemblathon statistics**  
-- **Bgzipped final genome files**  
+- Scaffolds for **each haplotype** (in `q0` or `q1_3D_DNA_HAP$n`)
+- **BUSCO scores** to assess completeness  (in `BUSCO/busco_summaries`)
+- **Final whole-genome and chromosome-level assemblies** (in `FINALS/` and `FINALS/chrs/`)  
+- **Assemblathon statistics**  (`/FINALS/whole_genome.fasta.gz.assemblahon_stats`)
 
