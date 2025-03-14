@@ -149,7 +149,7 @@ rule get_chrs:
         mem_mb=20000
     threads: 10
     shell:
-        "scripts/get_chrs.sh {input} {PATH}/FINALS/chrs {CHROMOSOMES}"
+        "scripts/get_chrs.sh {input} {PATH}/FINALS/chrs {nchr}"
 
 rule cat_chrs:
     input:
