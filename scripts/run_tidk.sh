@@ -9,8 +9,6 @@ wd=$3
 
 module load devel/Miniconda/Miniconda3 bioinfo/tidk/0.2.63
 
-fa="only_chrall_allhap.fasta"
-
 cd $wd
 
 tidk build
