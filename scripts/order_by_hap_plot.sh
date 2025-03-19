@@ -10,7 +10,8 @@ cd $wd
 
 head -n 1 $input > search_telomeric_repeat_windows_haps.tsv
 
-for n in 1 $nhaps
+
+for n in $(seq 1 $nhaps);
 do 
 	cat $input | grep \_h${n} >> search_telomeric_repeat_windows_haps.tsv
 done

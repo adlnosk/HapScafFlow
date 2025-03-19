@@ -45,7 +45,7 @@ done
 echo `ls list*`
 
 
-for chr in 1 $chrs
+for chr in $(seq 1 $chrs);
 do
 
 seqtk subseq $input_file list_chr${chr}.txt | bgzip > only_chr${chr}_allhap.fasta.gz
